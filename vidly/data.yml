@@ -1,10 +1,21 @@
+# YAML is a language for representing data but it has less clutter than JSON and is easier to read
+# File extension can be yaml or yml
+# three dashes denotes the start of a yml file
 ---
+# Curly braces are not used to denote hierarchy, indentation is used instead
+# Quotes also do not need to be used and no commas needed to separate key-value pairs
 name: The Ultimate Docker Course
 price: 149
 is_published: true
 tags:
+# Use hyphens to denote a list (as opposed to an array)
   - software
   - devops
 author:
-  - first_name: Mosh,
-  - last_name: Hamedani
+# Objects also do not use curly braces but we use tabs instead
+  first_name: Mosh,
+  last_name: Hamedani
+
+# YAML is visually cleaner than JSON, but it takes a little longer to parse YAML than it does to parse JSON
+# The data types are less clearly defined, so everything is first read as a string, then it is parsed into its correct data type
+# YAML is typically used for configuration and JSON is used for communication such as between a client and server

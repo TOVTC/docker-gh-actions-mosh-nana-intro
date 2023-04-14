@@ -1,26 +1,50 @@
+# docker-compose.yml is the default name that docker compose looks for
+# the version of the compose file format should be compatible with the version of Docker you are running
+# you can find the most recent version by looking it up
+# this number is expected to be a string not a number
 version: "3.8"
-
+# define the building blocks of your app (in any order)
+# the names are arbitrary, so web can be named "frontend" and api can be named "backend" and db can be called "database"
+# the point here is defining various services and telling docker how to build images for each service and how to run these images
 services:
+# each service will have its own properties which willbe used when running the container
+# properties will provide instructions on how to build an image for each service
   web:
+  # docker will automatically run our application
+  # the build property specifies where docker can find a dockerfile
     build: ./frontend
     ports:
-      # <container>:<local>
+      # you can have multiple port mappings, so use the syntax for lists (dash mark)
+      # host:container
       - 3000:3000
   api:
     build: ./backend
     ports:
       - 3001:3001
-    environment:
+      # we need an environemnt variable to tell where the databasae is
+    environment: 
       DB_URL: mongodb://db/vidly
-  db: # the name here can be changed,
-    # but it will be used as the reference to it
-    # for example in the DB_URL
+      # these conneciton strings always start with DB_URL=mongodb://
+      # when we start and app with docker, a network is created with three hosts, each named after the services we defined here
+      # add the name of a host our app will use (db) to the connection string
+      # then specify the database name
+
+      # you can also use list syntax to specify multiple environemnts
+      # - DB_URL=mongodb://db/vidly
+  db:
+    # an image is not going to be built for the database
+    # an image is going to be pulled from dockerhub
+    # here, we are pulling mongo version four built on top of xenial, which is ubuntu version 16
     image: mongo:4.0-xenial
     ports:
-      # mongo db default port == 27017
+      # mongo db default port is 27017
       - 27017:27017
+    # we don't want mongodb to write data to the temporary filesystem in the container, so set a volumes property
     volumes:
+    # map it to a directory inside the container
+    # mongodb stores its data to data/db by default
+    # we are mapping the vidly volume to the db directory so that whatever is written to the directory is outside of the container
       - vidly:/data/db
-
+# because we used the vidly volume above, we have to define it in our compose file at the same level of our volumes so we can use it
 volumes:
   vidly:
